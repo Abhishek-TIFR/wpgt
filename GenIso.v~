@@ -1,0 +1,220 @@
+
+
+
+(*---------------------------------- Descriptions ---------------------------------------
+
+In this file we define the idea of graph isomorphism between graphs on two different domain say A and B. This is done by defining following predicates:
+
+Definition morph_using (f: A-> B)  
+
+Definition iso (G G': @UG A) :=
+     exists (f: A->A), (forall x, f (f x) = x) /\ (nodes G') = (img f G) /\
+                 (forall x y, In x G -> In y G-> edg G x y = edg G' (f x) (f y)).
+
+ Definition iso_using (f: A->A)(G G': @UG A) :=
+     (forall x, f (f x) = x) /\ 
+     (nodes G') = (img f G) /\ 
+     (forall x y, edg G x y = edg G' (f x) (f y)).
+
+When we say (iso_using f G1 G2), we mean f is the function establishing the isomorphism
+between G1 and G2. We also prove that this relation is symmetric and transitive.
+Note that the self invertible nature of f makes it one_one on both G1 and G2. 
+Following are some useful property of f:
+ 
+ Lemma fx_is_one_one (l: list A)(f: A->A): (forall x, f (f x) = x) -> one_one_on l f.
+ Lemma img_of_img (l: list A)(f: A->A)(Hl: IsOrd l):
+    (forall x, f (f x) = x)-> img f (img f l) = l.
+
+ Lemma iso_sym1 (G G': @UG A)(f: A-> A): iso_using f G G' -> iso_using f G' G.
+ Lemma iso_sym (G G': @UG A): iso G G' -> iso G' G.
+
+ Lemma iso_one_one1 (G G': @UG A)(f: A-> A): iso_using f G G' -> one_one_on G f.
+ Lemma iso_using_G' (G G': @UG A)(f: A-> A): iso_using f G G' -> nodes G' = (img f G).
+ Lemma iso_one_one (G G': @UG A)(f: A-> A)(l: list A): iso_using f G G'-> one_one_on l f.
+ Lemma iso_cardinal (G G': @UG A)(f: A-> A): iso_using f G G' -> |G|=|G'|.
+ Lemma iso_sub_cardinal (G G': @UG A)(X: list A)(f: A->A): iso_using f G G' ->
+                                                           NoDup X -> |X|= | img f X |.
+ Lemma iso_edg1  (G G': @UG A)(f: A-> A)(x y:A): iso_using f G G' ->
+                                                (edg G x y = edg G' (f x) (f y)).
+ Lemma iso_edg2  (G G': @UG A)(f: A-> A)(x y: A): iso_using f G G' ->
+                                                (edg G' x y = edg G (f x) (f y)).
+-------------------------------------------------------------------------------------
+
+ Stable Set, Cliq and Coloring of graphs has exact counterpart in the isomorphic Graphs.
+ These results of existence of counterparts are summarized below: 
+
+
+ Lemma iso_cliq_in (G G': @UG A)(f: A-> A)(K: list A): iso_using f G G' -> 
+                                                      Cliq_in G K -> Cliq_in G' (img f K).
+ Lemma iso_cliq_in1 (G G': @UG A)(K: list A): iso G G' -> Cliq_in G K ->
+                                              (exists K', Cliq_in G' K' /\ |K|=|K'|).
+ Lemma max_K_in_G' (G G': @UG A)(f: A-> A)(K: list A): iso_using f G G' ->
+                                                    Max_K_in G K -> Max_K_in G' (img f K).
+
+
+Lemma iso_stable (G G': @UG A)(f: A-> A)(I: list A): iso_using f G G' -> 
+                                                     Stable G I -> Stable G' (img f I).
+Lemma iso_stable_in (G G': @UG A)(f: A-> A)(I: list A): iso_using f G G'-> 
+                                                Stable_in G I -> Stable_in G' (img f I).
+Lemma max_I_in_G' (G G': @UG A)(f: A-> A)(I: list A): iso_using f G G' -> 
+                                                  Max_I_in G I -> Max_I_in G' (img f I).
+
+Lemma cliq_num_G' (G G': @UG A)(n: nat): iso G G' -> cliq_num G n -> cliq_num G' n.
+Lemma i_num_G' (G G': @UG A)(n: nat):  iso G G' -> i_num G n -> i_num G' n. 
+Lemma chrom_num_G' (G G': @UG A)(n:nat): iso G G' -> chrom_num G n -> chrom_num G' n.
+
+Lemma nice_G' (G G': @UG A): iso G G' -> Nice G -> Nice G'.
+Lemma iso_subgraphs (G G' H: @UG A)(f: A->A):  iso_using f G G' -> Ind_subgraph H G -> 
+                                      (exists H', Ind_subgraph H' G' /\ iso_using f H H').
+Lemma perfect_G' (G G': @UG A): iso G G' -> Perfect G -> Perfect G'.
+
+
+Following definition represents the Graph G restricted to the vertex set K:
+
+  Definition Ind_at (K: list A)(Pk: IsOrd K)(G: @UG A): @UG A.
+     refine {|nodes:= K; nodes_IsOrd := Pk;
+              edg:= (G.(edg) at_ K); |}. all: auto. Defined. 
+
+------------------------------------------------------------------------------------------*)
+
+Require Export MoreUG.
+
+Set Implicit Arguments.
+
+
+Section GraphMorphism.
+
+  Context { A B: ordType }.
+
+  Definition morph_using (f: A-> B)(G: @UG A)(G': @UG B):=
+    (nodes G') = (img f G) /\  (forall x y, In x G-> In y G-> edg G x y = edg G' (f x) (f y)).
+  
+End GraphMorphism.
+
+Section GraphIsomorphism.
+  Context { A B: ordType }.
+
+  Definition isomorph_using (f: A-> B)(g: B-> A)(G: @UG A)(G': @UG B):=
+    morph_using f G G' /\ morph_using g G' G /\ (forall x, In x G -> g (f x) = x).
+
+  Definition isomorphic (G: @UG A)(G': @UG B):=
+    exists (f: A-> B)(g: B-> A), isomorph_using f g G G'.
+
+End GraphIsomorphism.
+
+
+
+Section GraphIsoProp.
+
+  Context { A B: ordType }.
+
+   (*--------------------- properties of bijective function for isomorphism----------------*)
+
+     
+  Lemma fx_is_one_one (l: list A)(f: A->B)(g: B->A):
+    (forall x, In x l ->  g (f x) = x) ->  one_one_on l f.
+  Proof. { intros H. unfold one_one_on. intros x y Hx Hy Hxy HC. absurd (x=y).
+           auto. replace y with (g (f y)). rewrite <- HC.
+           symmetry;eapply H;eauto. eauto. } Qed.
+
+  Lemma f_gx_is_x (l: list A)(s: list B)(f: A->B)(g: B->A):
+    (forall x, In x l-> g (f x) = x) -> (s = (img f l)) -> (forall y, In y s -> f (g y) = y).
+  Proof. { intros h1 h2 y h3.
+           assert (h4: exists x, In x l /\ y = f x).
+           { subst s; eauto. }
+           destruct h4 as [x h4]. destruct h4 as [h4a h4]. subst y.
+           replace (g (f x)) with x. auto. symmetry;auto. } Qed. 
+
+  Lemma gx_is_one_one (s: list B)(f: A-> B)(g: B->A):
+    (forall y, In y s -> f (g y) = y) -> one_one_on s g.
+  Proof. { intros H. unfold one_one_on. intros x y Hx Hy Hxy HC. absurd (x=y).
+           auto. replace y with (f (g y)). rewrite <- HC. symmetry;auto. auto. } Qed.
+
+  Lemma img_of_img (l: list A)(f: A->B)(g: B-> A)(Hl: IsOrd l):
+    (forall x, In x l-> g (f x) = x) -> img g (img f l) = l.
+ Proof. { intro H.
+         assert (H1: Equal (img g (img f l)) l).
+         { unfold Equal. split.
+           { unfold Subset. intros a H1.
+             assert (H2: exists b, In b (img f l) /\ a = g b); auto.
+             destruct H2 as [b H2]. destruct H2 as [H2a H2b].
+             assert (H3: exists x, In x l /\ b = f x ); auto.
+             destruct H3 as [x H3]. destruct H3 as [H3a H3b].
+             subst a. subst b. replace (g (f x)) with x. auto. symmetry;auto. }
+           { unfold Subset. intros a H1.
+             assert (H2: In (f a) (img f l)). auto.
+             assert (H2a: In (g (f a)) (img g (img f l))). auto.
+             replace (g (f a)) with a in H2a. auto. symmetry;auto. } } 
+         auto. } Qed.
+  
+
+   Lemma img_of_img1 (l: list A)(f: A->B)(g: B->A)(Hl: IsOrd l):
+     (forall x, In x l-> g (f x) = x) -> l = img g (img f l).
+   Proof. intros. symmetry. auto using img_of_img. Qed.
+
+    Lemma img_of_img2 (l: list B)(f: A->B)(g: B-> A)(Hl: IsOrd l):
+    (forall x, In x l-> f (g x) = x) -> img f (img g l) = l.
+    Proof. { intro H.
+         assert (H1: Equal (img f (img g l)) l).
+         { unfold Equal. split.
+           { unfold Subset. intros a H1.
+             assert (H2: exists b, In b (img g l) /\ a = f b); auto.
+             destruct H2 as [b H2]. destruct H2 as [H2a H2b].
+             assert (H3: exists x, In x l /\ b = g x ); auto.
+             destruct H3 as [x H3]. destruct H3 as [H3a H3b].
+             subst a. subst b. replace (f (g x)) with x. auto. symmetry;auto. }
+           { unfold Subset. intros a H1.
+             assert (H2: In (g a) (img g l)). auto.
+             assert (H2a: In (f (g a)) (img f (img g l))). auto.
+             replace (f (g a)) with a in H2a. auto. symmetry;auto. } } 
+         auto. } Qed.
+
+  Lemma img_of_img3 (l: list B)(f: A->B)(g: B-> A)(Hl: IsOrd l):
+    (forall x, In x l-> f (g x) = x) -> l = img f (img g l).
+    Proof. intros. symmetry. auto using img_of_img2. Qed.
+    
+  
+   
+    Hint Resolve  fx_is_one_one img_of_img img_of_img1: core.
+    Hint Resolve img_of_img2 img_of_img3: core.
+
+   (* ---------------------- Isomorphism is commutative and transitive------------------*)
+    Lemma iso_sym1 (G : @UG A)(G': @UG B)(f: A-> B)(g: B-> A):
+      isomorph_using f g G G' -> isomorph_using g f G' G.
+    Proof. { intro H. destruct H as [Ha H]; destruct H as [Hb H].
+           split.
+           { auto. }
+           split.
+           { auto. }
+           { eapply f_gx_is_x with (l:= G). auto. apply Ha. } } Qed.
+
+    Lemma iso_sym (G: @UG A)(G': @UG B): isomorphic G G' -> isomorphic G' G.
+    Proof. { intro H. destruct H as [f H]. destruct H as [g H].
+             exists g. exists f. apply iso_sym1. auto. } Qed.
+
+    Lemma iso_using_iso (G: @UG A)(G':@UG B)(f: A->B)(g: B-> A):
+      isomorph_using f g G G' -> isomorphic G G'.
+    Proof. intros h. exists f. exists g. auto. Qed.
+
+    Lemma iso_using_iso1 (G: @UG A)(G':@UG B)(f: A->B)(g: B-> A):
+      isomorph_using f g G G' -> isomorphic G' G.
+    Proof. intro h. apply iso_sym. eapply iso_using_iso. eauto. Qed.
+
+    Lemma iso_elim1 (G: @UG A)(G':@UG B)(f: A->B)(g: B-> A)(x:A):
+      isomorph_using f g G G'-> In x G-> In (f x) G'.
+   Proof. intros H Hx. replace (nodes G') with (img f G). auto. symmetry; apply H. Qed.  
+
+   Lemma iso_elim2 (G: @UG A)(G':@UG B)(f: A->B)(g: B-> A)(x:B):
+     isomorph_using f g G G'-> In x G'-> In (g x) G.
+  Proof. intros H Hx. replace (nodes G) with (img g G'). auto. symmetry.
+         apply iso_sym1 in H as Ha. apply Ha. Qed.
+  
+  
+  Hint Immediate iso_sym1 iso_sym iso_elim1 iso_elim2: core.
+
+  Hint Resolve iso_using_iso iso_using_iso1: core.
+  
+
+  End GraphIsoProp.
+
+ 
