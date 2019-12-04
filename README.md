@@ -2,8 +2,7 @@
 This work aims to formally verify the weak perfect graph theorems (WPGT) in the Coq proof assistant. 
 
 There is an accompanying paper describing this formalization titled:
- "A Constructive Formalization of the Weak Perfect Graph Theorem"
-  - by Abhishek Kr Singh and Raja Natarajan (In the proceedings of CPP'20).
+- "A Constructive Formalization of the Weak Perfect Graph Theorem" by Abhishek Kr Singh and Raja Natarajan (In the proceedings of CPP'20).
   
 The project is split into the following files: 
 
@@ -51,6 +50,6 @@ The project is split into the following files:
 
 
 
-The file sets.sh can be used to compile the files on sets and power sets (i.e. up to Powerset.v). 
-The file graphs.sh can be used to compile the files on undirected graphs (i.e. UG.v, MoreUG.v, GenIso.v, and GraphCovers.v). 
-To compile the whole project run all.sh. 
+-The file sets.sh can be used to compile the files on sets and power sets (i.e. up to Powerset.v). 
+-The file graphs.sh can be used to compile the files on undirected graphs (i.e. UG.v, MoreUG.v, GenIso.v, and GraphCovers.v). 
+-To compile the whole project run all.sh. 
