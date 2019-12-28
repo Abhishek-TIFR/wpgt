@@ -2,9 +2,22 @@
 This work aims to formally verify the weak perfect graph theorems (WPGT) in the Coq proof assistant. 
 
 There is an accompanying paper describing this formalization titled:
-- "A Constructive Formalization of the Weak Perfect Graph Theorem" by Abhishek Kr Singh and Raja Natarajan (In the proceedings of CPP'20).
+- Title: A Constructive Formalization of the Weak Perfect Graph Theorem.  (CPP'20).
+- Abstract: The Perfect Graph Theorems are among the most important results in graph theory 
+  describing the relationship between clique number ? (G ) and chromatic number ? (G )of a 
+  graph G. A graph G is called perfect if ?(H) = ?(H) for every induced subgraph H of G. The 
+  Strong Perfect Graph Theorem (SPGT) states that a graph is perfect if and only if it does not
+  contain an odd hole (or an odd anti-hole) as its induced subgraph. The Weak Perfect Graph 
+  Theorem (WPGT) states that a graph is perfect if and only if its complement is perfect. In this
+  work, we consider the Weak Perfect Graph Theorem and present a formal framework for its 
+  verification. We model  finite simple graphs in the Coq Proof Assistant by representing its 
+  vertices as  finite sets over a countably infinite domain. We argue that this approach provides 
+  a formal framework in which it is convenient to work with different types of graph constructions 
+  (or expansions) involved in the proof of the Lovász Replication Lemma (LRL), which is also 
+  the key result used in the proof of Weak Perfect Graph Theorem. Finally, we use this setting to 
+  develop a constructive formalisation of the Weak Perfect Graph Theorem.
   
-The project is split into the following files: 
+The project is split into the following Coq files: 
 
 1. GenReflect.v: Contains common results on reflection techniques.
 
