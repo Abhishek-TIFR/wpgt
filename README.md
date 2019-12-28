@@ -4,8 +4,8 @@ This work aims to formally verify the weak perfect graph theorems (WPGT) in the 
 There is an accompanying paper describing this formalization titled:
 - Title: A Constructive Formalization of the Weak Perfect Graph Theorem.  (CPP'20).
 - Abstract: The Perfect Graph Theorems are among the most important results in graph theory 
-  describing the relationship between clique number $\omega(G)$ and chromatic number $\chi(G)$ of a 
-  graph G. A graph G is called perfect if $\omega(H) = \chi(H)$ for every induced subgraph H of G. The 
+  describing the relationship between clique number &\omega (G) and chromatic number &\chi (G) of a 
+  graph G. A graph G is called perfect if &\omega (H) = &\chi (H) for every induced subgraph H of G. The 
   Strong Perfect Graph Theorem (SPGT) states that a graph is perfect if and only if it does not
   contain an odd hole (or an odd anti-hole) as its induced subgraph. The Weak Perfect Graph 
   Theorem (WPGT) states that a graph is perfect if and only if its complement is perfect. In this
